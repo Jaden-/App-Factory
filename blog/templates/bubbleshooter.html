@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="utf8">
+  <title>Bubble Shooter</title>
+  <link href="blog/static/bubbleshooter/_css/main.css" rel="stylesheet">
+  <link href="blog/static/bubbleshooter/_css/game.css" rel="stylesheet">
+  <script src="blog/static/bubbleshooter/_js/modernizr.js"></script>
+  <script>
+    Modernizr.load([
+      {
+        load: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+        complete: function() {
+          console.log('modernizr.load jQuery: complete');
+          if(!window.jQuery) {
+            Modernizr.load('blog/static/bubbleshooter/_js/jquery-2.1.4.js');
+          }
+        }
+      },
+      'blog/static/bubbleshooter/_js/collision-detector.js',
+      'blog/static/bubbleshooter/_js/bubble.js',
+      'blog/static/bubbleshooter/_js/ui.js',
+      'blog/static/bubbleshooter/_js/board.js',
+      'blog/static/bubbleshooter/_js/jquery.kaboom.js',
+      {
+        test: Modernizr.canvas,
+        yep: ['blog/static/bubbleshooter/_js/renderer.js', 'blog/static/bubbleshooter/_js/sprite.js']
+      },
+      {
+        load: 'blog/static/bubbleshooter/_js/game.js',
+        complete: function() {
+          console.log('modernizr.load blog/static/bubbleshooter/_js/game.js: complete');
+          $(function() {
+            console.log('creating new BubbleShoot.Game()');
+            var game = new BubbleShoot.Game();
+            game.init();
+          })
+        }
+      }
+    ]);
+  </script>
+</head>
+<body>
+  <div id="page">
+    <div id="top_bar">
+      <div id="top_level_box">
+        <div id="top_level_label">Level:</div>
+        <div id="level">1</div>
+      </div>
+      <div class="top_bar_box">
+        <div id="top_score_label">Score:</div>
+        <div id="score">0</div>
+      </div>
+      <div>
+        <div id="top_score_label">High Score:</div>
+        <div id="high_score">0</div>
+      </div>
+    </div>
+    <div id="game">
+      <div id="board">
+        <div id="bubbles_remaining"></div>
+      </div>
+    </div>
+    <div id="footer_bar"></div>
+    <div id="start_game" class="dialog">
+      <div id="start_game_message">
+        <h2>Start a new game</h2>
+      </div>
+      <div class="but_start_game button">
+        New Game
+      </div>
+    </div>
+    <div id="end_game" class="dialog">
+      <div id="end_game_message">
+        <h2>Game Over</h2>
+        <div id="final_score">
+          <span>Final Score:</span>
+          <span id="final_score_value"></span>
+        </div>
+        <div id="new_high_score_value">New High Score!</div>
+        <div id="level_failed" class="level_failed">Level Failed!</div>
+        <div id="level_complete" class="level_complete">Level Complete!</div>
+      </div>
+      <div class="but_start_game button">
+        <span class="level_complete">Next Level</span>
+        <span class="level_failed">New Game</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

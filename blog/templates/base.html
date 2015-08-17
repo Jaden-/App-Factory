@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="blog/static/main.css" />
+    <link type="text/css" rel="stylesheet" href="blog/static/footer-basic-centered.css"/>
+    <link type="text/css" rel="stylesheet" href="blog/static/header-basic-centered.css"/>
+    <meta name="keywords" content="footer, basic, centered, links" />
+
+  <title>App Factory</title>
+</head>
+
+<body>
+  <a href="/" class="main-title">
+    App Factory
+  </a>
+
+  <nav class="header-basic-centered">
+      <p class="header-links">
+          <a href="/">Home</a>
+          -
+          <a href="/newpost">New post</a>
+          -
+          <a href=".json">Convert to json</a>
+      </p>
+  </nav>
+  <a>
+
+  </a>
+
+  <div class="login-area">
+    {% if user %}
+      {{user.name}} (<a class="login-link" href="/logout">logout</a>)
+    {% else %}
+      <a class="login-link" href="/login">login</a>
+      |
+      <a class="login-link" href="/signup">signup</a>
+    {% endif %}
+  </div>
+
+  {% if logged_in %}
+      <div>
+          <h3>You successfully logged in</h3>
+      </div>
+  {% elif logged_out %}
+      <div>
+          <h3>You successfully logged out</h3>
+      </div>
+  {% elif registered %}
+      <div>
+          <h3>You successfully registered!</h3>
+      </div>
+  {% endif %}
+
+  <div id="content">
+      {% block content %}
+      {% endblock %}
+  </div>
+
+</body>
+
+<footer class="footer-basic-centered">
+
+    <p class="footer-company-motto">App Factory</p>
+
+    <p class="footer-links">
+        <a href="/">Home</a>
+        -
+        <a href="/newpost">New post</a>
+        -
+        <a href="#">About</a>
+        -
+        <a href="#">Contact</a>
+    </p>
+
+    <p class="footer-company-name">App Factory &copy; 2015</p>
+
+</footer>
+
+</html>
+

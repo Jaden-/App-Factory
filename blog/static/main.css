@@ -1,0 +1,243 @@
+/*Font Loded*/
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
+
+body {
+    position: relative;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+
+    width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+    color: #333;
+}
+
+.main-title {
+    display: block;
+    color: #222;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
+.table-style {
+    display: block;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.login-area {
+    font-size: 15px;
+    color: gray;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.login-link {
+    color: gray;
+    text-decoration: none;
+}
+
+.login-link:visited {
+    color: gray;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: red;
+}
+
+label {
+  display: block;
+  font-size: 20px;
+}
+
+label + label {
+    margin-top: 20px;
+}
+
+input[type=text] {
+    width: 500px;
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
+}
+
+textarea {
+  width: 500px;
+  height: 400px;
+  font-size: 17px;
+  font-family: monospace;
+}
+
+input[type=submit] {
+  font-size: 24px;
+}
+
+.post + .post {
+    margin-top: 15px;
+}
+
+.post-heading {
+    position: relative;
+    border-bottom: 3px solid #666;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.post-date {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    color: #999;
+
+}
+
+.post-content {
+    margin-top: 5px;
+}
+
+.newsfeed {
+    border-color: #080808;
+    border: solid;
+}
+
+/*App list*/
+
+body {
+    font: 16px Helvetica;
+    background: #ecf0f1;
+}
+
+.container {
+    max-width: 800px;
+    height: 450px;
+    margin: auto;
+}
+
+.silver, .plat {
+    float: left;
+    width: 250px;
+    background: white;
+    border: groove;
+    text-align: center;
+}
+
+.h1_app {
+    margin: 20px 0 10px 0;
+    font-size: 1.25em;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.h2_app {
+    font-size: .75em;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 100;
+    letter-spacing: 1px;
+}
+
+.p_app {
+    color: rgba(0, 0, 0, 0.4);
+    margin: 10px 0;
+    font-weight: 100;
+    font-size: .75em;
+}
+
+.span_app {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    display: inline-block;
+    width: 125px;
+    font-size: 1em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.span-fixed_app {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    display: inline-block;
+    width: 175px;
+    height: 40px;
+    font-size: 1em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.app1 {
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    background-image: url("images/google_maps.png");
+    border-radius: 50%;
+    line-height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin: 20px auto;
+}
+
+.app2 {
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    background-image: url("images/snake.png");
+    border-radius: 50%;
+    line-height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin: 20px auto;
+}
+
+.app3 {
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    background-image: url("images/bubble_shooter.jpg");
+    border-radius: 50%;
+    line-height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin: 20px auto;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+    width: 150px;
+    height: 35px;
+    border-bottom: 5px solid #c0392b;
+    background: #e74c3c;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: .75em;
+    font-weight: 100;
+    transition: all ease-in-out .2s;
+}
+
+button:hover {
+    background: #c0392b;
+}
