@@ -1,4 +1,6 @@
 import webapp2
+from blog.FredrikSnake import FredrikSnakeHandler
+from blog.IvarSnake import IvarSnakeHandler
 
 from blog.blog_front import BlogFront
 from blog.bubbleshooter import BubbleHandler
@@ -15,6 +17,8 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/logout', Logout),
-                               ('/bubbleshooter', BubbleHandler)
+                               ('/bubbleshooter', BubbleHandler),
+                               ('/snake_fredrik', FredrikSnakeHandler),
+                               ('/snake_ivar', IvarSnakeHandler)
                                ],
                               debug=True)
