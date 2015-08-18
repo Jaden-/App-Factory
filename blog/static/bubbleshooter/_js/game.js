@@ -89,6 +89,7 @@ BubbleShoot.Game = (function($) {
       if(collision) {
         var coords = collision.coords;
         duration = Math.round(duration * collision.distToCollision / distance);
+        setTimeout(function(){BubbleShoot.Sounds.play('_mp3/hit.mp3', 0.5)}, duration);
         board.addBubble(curBubble, coords);
         var group = board.getGroup(curBubble, {});
         if(group.list.length >= 3) {
@@ -123,6 +124,7 @@ BubbleShoot.Game = (function($) {
         };
       }
       BubbleShoot.ui.fireBubble(curBubble, coords, duration);
+      BubbleShoot.Sounds.play('_mp3/shoot.mp3', 0.5);
       if(board.getRows().length > MAX_ROWS) {
         endGame(false);
       } else if(numBubbles == 0) {
@@ -183,6 +185,8 @@ BubbleShoot.Game = (function($) {
         board.popBubbleAt(this.getRow(), this.getCol());
         setTimeout(function() {
           bubble.setState(BubbleShoot.BubbleState.POPPED);
+          console.log(BubbleShoot.Sounds);
+          BubbleShoot.Sounds.play('_mp3/pop.mp3', Math.random() * 0.5 + 0.53);
           bubble.getSprite().remove();
         }, delay + 200);
         delay += 60;
