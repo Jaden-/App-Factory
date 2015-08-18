@@ -14,7 +14,7 @@ BubbleShoot.Renderer = (function($) {
       $(canvas).attr('height',$(canvas).height());
       context = canvas.getContext('2d');
       spriteSheet = new Image();
-      spriteSheet.src = 'blog/static/bubbleshooter/_img/bubble_sprite_sheet.png';
+      spriteSheet.src = '_img/bubble_sprite_sheet.png';
       spriteSheet.onload = function() {
         callback();
       };
