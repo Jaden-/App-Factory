@@ -3,4 +3,4 @@ from blog.general_handler import GeneralHandler
 
 class IvarSnakeHandler(GeneralHandler):
     def get(self):
-        self.render()
+        self.render('ivar-snake.html')
