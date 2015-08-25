@@ -8,8 +8,10 @@ $(document).ready(function(){
     //Lets save the cell width in a variable for easy control
     var cw = 10;
     var d;
+    var nd;
     var food;
     var score;
+    var highscore = 0;
 
     //Lets create the snake now
     var snake_array; //an array of cells to make up the snake
@@ -17,6 +19,7 @@ $(document).ready(function(){
     function init()
     {
         d = "right"; //default direction
+        nd = [];
         create_snake();
         create_food(); //Now we can see the food particle
         //finally lets display the score
@@ -54,6 +57,9 @@ $(document).ready(function(){
     //Lets paint the snake now
     function paint()
     {
+        if (nd.length) {
+            d = nd.shift();
+        }
         //To avoid the snake trail we need to paint the BG on every frame
         //Lets paint the canvas now
         ctx.fillStyle = "white";
@@ -66,7 +72,6 @@ $(document).ready(function(){
         //Pop out the tail cell and place it infront of the head cell
         var nx = snake_array[0].x;
         var ny = snake_array[0].y;
-
         //These were the position of the head cell.
         //We will increment it to get the new head position
         //Lets add proper direction based movement now
@@ -114,11 +119,17 @@ $(document).ready(function(){
             paint_cell(c.x, c.y);
         }
 
+        if (highscore < score) {
+            highscore = score;
+        }
+
         //Lets paint the food
         paint_cell(food.x, food.y);
         //Lets paint the score
         var score_text = "Score: " + score;
+        var highscore_text = "Highscore: " + highscore;
         ctx.fillText(score_text, 5, h-5);
+        ctx.fillText(highscore_text, 60, h - 5);
     }
 
     //Lets first create a generic function to paint cells
@@ -145,15 +156,20 @@ $(document).ready(function(){
     //Lets add the keyboard controls now
     $(document).keydown(function(e){
         var key = e.which;
-        if (key == "37" || key == "38" || key == "39" || key == "40") {
-            //Prevent the key directions from affecting the scrollbar.
-            //We will add another clause to prevent reverse gear
-            e.preventDefault();
-            if(key == "37" && d != "right") d = "left";
-            else if(key == "38" && d != "down") d = "up";
-            else if(key == "39" && d != "left") d = "right";
-            else if(key == "40" && d != "up") d = "down";
+        var td;
+        if (nd.length) {
+            var td = nd[nd.length - 1];
+        } else {
+            td = d;
         }
-        //The snake is now keyboard controllable
+        if (key == "37" || key == "38" || key == "39" || key == "40") {
+            e.preventDefault();
+            //We will add another clause to prevent reverse gear
+            if (key == "37" && td != "right") nd.push("left");
+            else if (key == "38" && td != "down") nd.push("up");
+            else if (key == "39" && td != "left") nd.push("right");
+            else if (key == "40" && td != "up") nd.push("down");
+            //The snake is now keyboard controllable
+        }
     })
 })

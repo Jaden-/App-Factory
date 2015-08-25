@@ -35,6 +35,9 @@ class GeneralHandler(webapp2.RequestHandler):
         t = jinja_env.get_template(template)
         return t.render(kw)
 
+    def get_user(self):
+        return self.user.name
+
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 

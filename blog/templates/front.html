@@ -7,7 +7,7 @@
 
             <div class='app1'></div>
             <p class="p_app">Technologies</p>
-            <span class="span-fixed_app">Javascript, Python, Google Maps API</span>
+            <span class="span-fixed_app">JS, Python, Google Maps API, GCD</span>
 
             <p class="p_app">Clicks</p>
             <span class="span_app">7</span>
@@ -20,19 +20,16 @@
 
             <div class='app2'></div>
             <p class="p_app">Technologies</p>
-            <span class="span-fixed_app">JavaScript, Python</span>
+            <span class="span-fixed_app">JavaScript, Node.js</span>
 
             <p class="p_app">Clicks</p>
             <span class="span_app">3</span>
-            <a href="/snake_fredrik">
-                <button>Snake - Fredrik</button>
-            </a>
-            <a href="/snake_ivar">
-                <button>Snake - Ivar</button>
+            <a href="/snake">
+                <button>PLAY</button>
             </a>
         </div>
         <div class='silver'>
-            <h1 class="h1_app">Bubble shooter LIVE</h1>
+            <h1 class="h1_app">Bubble shooter</h1>
 
             <div class='app3'></div>
             <p class="p_app">Technologies</p>
@@ -48,11 +45,38 @@
 </div>
 
 <div class="newsfeed">
-    <h1>Newsfeed</h1>
-    {% for p in posts %}
-    {{ p.render() | safe }}
+    <span style="font-size: 30px; font-weight: bold">Comments</span>
+    <a style="padding-left: 10px" href="/?allComments=True">
+        View all
+    </a>
+    <a style="padding-left: 10px" href="/?allComments=False">
+        | Recent
+    </a>
+    <br><br>
+    {% for c in frontComments %}
+    {{ c.render() | safe }}
     <br><br>
     {% endfor %}
+</div>
+<div>
+    {% if not user %}
+    <h3>You need to be logged in to comment</h3>
+    <a class="login-link" href="/login">login</a>
+    |
+    <a class="login-link" href="/signup">signup</a>
+    {% else %}
+    <h2>New Comment</h2>
+
+    <form method="post">
+        <label>
+            <textarea name="frontContent">{{content}}</textarea>
+        </label>
+
+        <div class="error">{{error}}</div>
+
+        <input type="submit">
+    </form>
+    {% endif %}
 </div>
 
 {% endblock %}

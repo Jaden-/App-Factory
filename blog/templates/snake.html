@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<!--Snake-->
+<canvas id="canvas" width="800" height="450"></canvas>
+
+<!--Jquery-->
+<script src="blog/static/js/jquery-2.1.4.js" type="text/javascript"></script>
+<div class="snake">
+    <script src="blog/static/fredrik_snake/js/snake.js" type="text/javascript"></script>
+</div>
+
+
+<h1>Last 4 comments</h1>
+{% for c in snakeComments %}
+{{ c.render() | safe }}
+<br><br>
+{% endfor %}
+
+<h2>New Comment</h2>
+
+{% if not user %}
+<div class="newsfeed">
+    <h1>Highscores - Snake</h1>
+
+    <h3>You need to be logged in to comment</h3>
+    <a class="login-link" href="/login">login</a>
+    |
+    <a class="login-link" href="/signup">signup</a>
+</div>
+
+{% else %}
+<form method="post">
+    <label>
+        <textarea name="snakeContent">{{content}}</textarea>
+    </label>
+
+    <div class="error">{{error}}</div>
+
+    <input type="submit">
+</form>
+{% endif %}
+
+{% endblock %}

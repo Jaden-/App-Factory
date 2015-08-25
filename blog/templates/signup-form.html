@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+{% block content %}
 
 <html>
   <head>
@@ -19,7 +20,7 @@
             Username
           </td>
           <td>
-            <input type="text" name="username" value="{{username}}">
+            <input type="text" style="width: 250px; height: 20px" name="username" value="{{username}}">
           </td>
           <td class="error">
             {{error_username}}
@@ -31,7 +32,7 @@
             Password
           </td>
           <td>
-            <input type="password" name="password" value="">
+            <input type="password" style="width: 250px; height: 20px" name="password" value="">
           </td>
           <td class="error">
             {{error_password}}
@@ -43,7 +44,7 @@
             Verify Password
           </td>
           <td>
-            <input type="password" name="verify" value="">
+            <input type="password" style="width: 250px; height: 20px" name="verify" value="">
           </td>
           <td class="error">
             {{error_verify}}
@@ -55,7 +56,7 @@
             Email (optional)
           </td>
           <td>
-            <input type="text" name="email" value="{{email}}">
+            <input type="text" style="width: 250px; height: 20px" name="email" value="{{email}}">
           </td>
           <td class="error">
             {{error_email}}
@@ -68,3 +69,5 @@
   </body>
 
 </html>
+
+{% endblock %}
