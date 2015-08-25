@@ -5,7 +5,12 @@ from db.SnakeComment import SnakeComment
 
 class SnakeHandler(GeneralHandler):
     def get(self):
-        comments = GqlQuery("SELECT * FROM SnakeComment ORDER BY created DESC LIMIT 4")
+        all_comments = self.request.get('allComments')
+
+        if all_comments == 'True':
+            comments = GqlQuery("SELECT * FROM SnakeComment ORDER BY created DESC")
+        else:
+            comments = GqlQuery("SELECT * FROM SnakeComment ORDER BY created DESC LIMIT 4")
 
         self.render('snake.html', snakeComments=comments);
 

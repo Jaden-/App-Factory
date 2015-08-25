@@ -9,8 +9,16 @@
     <script src="blog/static/fredrik_snake/js/snake.js" type="text/javascript"></script>
 </div>
 
+<h2>Highscores</h2>
 
-<h1>Last 4 comments</h1>
+<br>
+<span style="font-size: 30px; font-weight: bold">Comments</span>
+<a style="padding-left: 10px" href="/snake?allComments=True">
+    View all
+</a>
+<a style="padding-left: 10px" href="/snake?allComments=False">
+    | Recent
+</a>
 {% for c in snakeComments %}
 {{ c.render() | safe }}
 <br><br>
@@ -20,8 +28,6 @@
 
 {% if not user %}
 <div class="newsfeed">
-    <h1>Highscores - Snake</h1>
-
     <h3>You need to be logged in to comment</h3>
     <a class="login-link" href="/login">login</a>
     |
