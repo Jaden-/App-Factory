@@ -6,6 +6,7 @@
     <link type="text/css" rel="stylesheet" href="blog/static/header-basic-centered.css"/>
     <link type="text/css" rel="stylesheet" href="blog/static/fredrik_snake/css/snake.css"/>
     <link type="text/css" rel="stylesheet" href="blog/static/about-table.css"/>
+    <link type="text/css" rel="stylesheet" href="blog/static/chat.css"/>
     <meta name="keywords" content="footer, basic, centered, links" />
 
   <title>App Factory</title>
@@ -62,7 +63,11 @@
 
 <footer class="footer-basic-centered">
 
-    <p class="footer-company-motto">App Factory</p>
+    <p class="footer-title">App Factory</p>
+
+    <p class="footer-stats">
+        Registered users: {{ registered_users }} | Comments: {{ comments }}
+    </p>
 
     <p class="footer-links">
         <a href="/">Home</a>

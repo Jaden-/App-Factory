@@ -10,10 +10,16 @@
 	margin-top: 30px;
 }
 
-.footer-basic-centered .footer-company-motto{
+.footer-basic-centered .footer-title{
 	color:  #8d9093;
 	font-size: 24px;
 	margin: 0;
+}
+
+.footer-basic-centered .footer-stats{
+	padding-top: 25px;
+	color:  #ffffff;
+	font-size: 18px;
 }
 
 .footer-basic-centered .footer-company-name{

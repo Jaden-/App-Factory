@@ -10,7 +10,7 @@ class FrontComment(db.Model):
     last_modified = db.DateTimeProperty(auto_now=True)
 
     def render(self):
-        self._render_text = self.frontContent  # .replace('\n', '<br>')
+        self._render_text = self.frontContent.replace('\n', '<br>')
         self._author_ = self.author
         return render_str("post.html", p=self)
 

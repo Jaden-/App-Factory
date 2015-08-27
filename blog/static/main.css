@@ -22,6 +22,11 @@ body {
     text-decoration: none;
 }
 
+.maps {
+    horiz-align: center;
+    border: 5px solid black;
+}
+
 a[href] {
     text-decoration: none;
 }
@@ -130,7 +135,7 @@ body {
 
 .container {
     max-width: 800px;
-    height: 500px;
+    height: 680px;
     margin: auto;
 }
 
@@ -179,12 +184,11 @@ body {
     padding-bottom: 10px;
     display: inline-block;
     width: 175px;
-    height: 40px;
+    height: 15px;
     font-size: 1em;
     font-weight: 700;
     letter-spacing: 1px;
     color: rgba(0, 0, 0, 0.5);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .app1 {
@@ -218,6 +222,19 @@ body {
     width: 100px;
     text-align: center;
     background-image: url("images/bubble_shooter.jpg");
+    border-radius: 50%;
+    line-height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin: 20px auto;
+}
+
+.app4 {
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    background-image: url("images/live-chat.png");
     border-radius: 50%;
     line-height: 100px;
     color: #fff;

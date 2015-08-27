@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Google maps</h1>
+    <p style="margin-right: 50px">
+        Users registered after 25.08.2015 will have their IP-adress stored in the database
+        and their location showed at this site.
+    <p>
+    {% if img_url %}
+        <img src="{{img_url}}" align="middle" style="padding-left: 90px">
+    {% endif %}
+
+<h3>Here at app factory, we love privacy</h3>
+<table class="about-table">
+<tr>
+    <th>
+        Name
+    </th>
+    <th>
+        Coordinates
+    </th>
+    <th>
+        Created
+    </th>
+</tr>
+{% for user in users %}
+    <tr>
+        <td>
+            {{user.name}}
+        </td>
+        <td>
+            {{user.coords}}
+        </td>
+        <td>
+            {{user.created}}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -4,7 +4,6 @@ import string
 
 from google.appengine.ext import db
 
-
 def make_pw_hash(name, pw, salt = None):
     if not salt:
         salt = make_salt()
@@ -18,7 +17,6 @@ def valid_pw(name, password, h):
 def make_salt(length = 5):
     return ''.join(random.choice(string.letters) for x in xrange(length))
 
-
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
 
@@ -26,7 +24,9 @@ def users_key(group = 'default'):
 class User(db.Model):
     name = db.StringProperty(required=True)
     pw_hash = db.StringProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
     email = db.StringProperty()
+    coords = db.GeoPtProperty()
 
     @classmethod
     def by_id(cls, uid):
@@ -38,12 +38,13 @@ class User(db.Model):
         return u
 
     @classmethod
-    def register(cls, name, pw, email = None):
+    def register(cls, name, pw, email = None, coords=None):
         pw_hash = make_pw_hash(name, pw)
         return User(parent=users_key(),
                     name = name,
                     pw_hash = pw_hash,
-                    email = email)
+                    email = email,
+                    coords = coords)
 
     @classmethod
     def login(cls, name, pw):

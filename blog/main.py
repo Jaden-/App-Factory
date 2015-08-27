@@ -1,4 +1,6 @@
 import webapp2
+from blog.google_maps import GoogleMapsHandler
+from blog.live_chat import LiveChatHandler
 
 from blog.snake import SnakeHandler
 from blog.about import AboutHandler
@@ -14,8 +16,10 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/logout', Logout),
+                               ('/googlemaps', GoogleMapsHandler),
                                ('/bubbleshooter', BubbleHandler),
                                ('/snake', SnakeHandler),
+                               ('/livechat', LiveChatHandler),
                                ('/about', AboutHandler)
                                ],
                               debug=True)

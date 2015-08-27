@@ -1,9 +1,11 @@
 import hmac
 import json
 import os
+
 import jinja2
 import webapp2
-from db import User
+from db.Count import Count
+from db.User import User
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
@@ -32,6 +34,8 @@ class GeneralHandler(webapp2.RequestHandler):
 
     def render_str(self, template, **kw):
         kw['user'] = self.user
+        kw['registered_users'] = Count.getAllRegisteredUsers()
+        kw['comments'] = Count.getAllFrontComments() + Count.getAllSnakeComments()
         t = jinja_env.get_template(template)
         return t.render(kw)
 
@@ -66,7 +70,7 @@ class GeneralHandler(webapp2.RequestHandler):
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
-        self.user = uid and User.User.by_id(int(uid))
+        self.user = uid and User.by_id(int(uid))
 
         if self.request.url.endswith('.json'):
             self.format = 'json'

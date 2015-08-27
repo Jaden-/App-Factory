@@ -1,4 +1,8 @@
+import logging
 import re
+import urllib2
+from xml.dom import minidom
+from google.appengine.api.datastore_types import GeoPt
 from blog.general_handler import GeneralHandler
 
 from db import User
@@ -52,6 +56,25 @@ class Signup(GeneralHandler):
     def done(self):
         raise NotImplementedError
 
+IP_URL = "http://api.hostip.info/?ip="
+def get_coords(ip):
+    url = IP_URL + ip
+    content = None
+    try:
+        logging.log(40, "Reading URL")
+        content = urllib2.urlopen(url).read()
+    except urllib2.URLError:
+        logging.log(40, "ERROR URLIB2")
+        return
+
+    if content:
+        #Parse xml and find the coordinates
+        d = minidom.parseString(content)
+        coords = d.getElementsByTagName("gml:coordinates")
+        if coords and coords[0].childNodes[0].nodeValue:
+            lon, lat = coords[0].childNodes[0].nodeValue.split(',')
+            return GeoPt(lat, lon)
+
 class Register(Signup):
     def done(self):
         #check if user doesn't already exist.
@@ -60,7 +83,7 @@ class Register(Signup):
             msg = 'That user already exists.'
             self.render('signup-form.html', error_username = msg)
         else:
-            u = User.User.register(self.username, self.password, self.email)
+            u = User.User.register(self.username, self.password, self.email, get_coords(self.request.remote_addr))
             u.put()
 
             self.login(u)
