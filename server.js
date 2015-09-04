@@ -1,3 +1,4 @@
-/**
- * Created by fredrik.thorp.adland on 27.08.2015.
- */
+var mongo = require('mongodb').MongoClient,
+    client = require("socket.io").listen(8080).sockets;
+
+console.log('Server started')

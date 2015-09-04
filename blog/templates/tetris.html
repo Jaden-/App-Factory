@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<body class="tetris_body">
+<div id="gameboard">
+    <canvas id="gameCanvas" width="480" height="640"></canvas>
+</div>
+<audio controls autoplay loop>
+    <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
+</audio>
+<div id="score">
+    <!--<p>Lines: <span id="lines"></span></p>-->
+</div>
+</body>
+
+<script type="text/javascript" src="blog/static/tetris/js/pieces.js"></script>
+<script type="text/javascript" src="blog/static/tetris/js/BulkImageLoader.js"></script>
+
+<script type="text/javascript">
+    var ROWS = 20;
+    var COLS = 10;
+
+    const NEXT_ROWS = 4;
+    const NEXT_COLS = 4;
+
+    const NEXT_PIECE_X = 335;
+    const NEXT_PIECE_Y = 50;
+
+    var SIZE = 32;
+
+    var canvas;
+    var ctx;
+    var blockImg;
+    var bgImg;
+    var gameOverImg;
+
+    var curPiece;
+    var gameData;
+    var nextPieceData;
+    var imgLoader;
+    var prevTime;
+    var curTime;
+    var isGameOver;
+    var lineSpan;
+    var curLines = 0;
+
+    // mobile
+    var touchX, touchY, touchId;
+
+    window.onload = onReady;
+
+    document.body.addEventListener('touchstart', function (e) {
+
+        touchX = e.touches[0].pageX;
+        touchY = e.touches[0].pageY;
+        touchId = e.touches[0].identifier;
+    });
+
+    document.body.addEventListener('touchmove', function (e) {
+
+        var difY = e.touches[0].pageY - touchY;
+
+        if (difY > 60) {
+            e.preventDefault();
+            if (checkMove(curPiece.gridx, curPiece.gridy + 1, curPiece.curState)) {
+                curPiece.gridy++;
+            }
+        }
+    });
+
+    document.body.addEventListener('touchend', function (e) {
+        var touchEndX;
+        var touchEndY;
+
+        var touch = e.changedTouches.item(0);
+
+        try {
+            touchEndX = touch.pageX;
+            touchEndY = touch.pageY;
+        } catch (err) {
+            alert(err);
+            return;
+        }
+
+        var difX = Math.abs(touchEndX - touchX);
+        var difY = Math.abs(touchEndY - touchY);
+
+        if (difX < 10 && difY < 10) {
+            e.preventDefault();
+            var newState = curPiece.curState - 1;
+            if (newState < 0) {
+                newState = curPiece.states.length - 1;
+            }
+
+            if (checkMove(curPiece.gridx, curPiece.gridy, newState)) {
+                curPiece.curState = newState;
+            }
+        } else {
+            if (difX > difY) {
+                if (touchEndX < touchX) {
+                    if (checkMove(curPiece.gridx - 1, curPiece.gridy, curPiece.curState)) {
+                        curPiece.gridx--;
+                    }
+                } else {
+                    if (checkMove(curPiece.gridx + 1, curPiece.gridy, curPiece.curState)) {
+                        curPiece.gridx++;
+                    }
+                }
+            }
+        }
+    });
+
+    function onReady() {
+        imgLoader = new BulkImageLoader();
+        imgLoader.addImage("blog/static/tetris/img/blocks.png", "blocks");
+        imgLoader.addImage("blog/static/tetris/img/bg.png", "bg");
+        imgLoader.addImage("blog/static/tetris/img/over.png", "gameover");
+        imgLoader.onReadyCallback = onImagesLoaded;
+        imgLoader.loadImages();
+
+        canvas = document.getElementById('gameCanvas');
+        ctx = canvas.getContext('2d');
+//        lineSpan = document.getElementById('lines');
+
+        prevTime = curTime = 0;
+
+        document.onkeydown = getInput;
+    }
+
+    function getInput() {
+        if (!e) {
+            var e = window.event;
+        }
+
+        if (isGameOver != true) {
+            switch (e.keyCode) {
+                case 37:
+                    e.preventDefault();
+                    if (checkMove(curPiece.gridx - 1, curPiece.gridy, curPiece.curState)) {
+                        curPiece.gridx--;
+                    }
+                    break;
+                case 39:
+                    e.preventDefault();
+                    if (checkMove(curPiece.gridx + 1, curPiece.gridy, curPiece.curState)) {
+                        curPiece.gridx++;
+                    }
+                    break;
+                case 38:
+                    e.preventDefault();
+                    var newState = curPiece.curState - 1;
+                    if (newState < 0) {
+                        newState = curPiece.states.length - 1;
+                    }
+
+                    if (checkMove(curPiece.gridx, curPiece.gridy, newState)) {
+                        curPiece.curState = newState;
+                    }
+                    break;
+
+                case 40:
+                    e.preventDefault();
+                    if (checkMove(curPiece.gridx, curPiece.gridy + 1, curPiece.curState)) {
+                        curPiece.gridy++;
+                    }
+                    break;
+
+                case 32:
+                    e.preventDefault();
+                    while (checkMove(curPiece.gridx, curPiece.gridy + 1, curPiece.curState)) {
+                        curPiece.gridy++;
+                    }
+                    break;
+            }
+        } else {
+            initGame();
+        }
+    }
+
+    function onImagesLoaded(e) {
+        blockImg = imgLoader.getImageAtIndex(0);
+        bgImg = imgLoader.getImageAtIndex(1);
+        gameOverImg = imgLoader.getImageAtIndex(2);
+        initGame();
+    }
+
+    function initGame() {
+        var r, c;
+        curLines = 0;
+        isGameOver = false;
+
+        if (gameData == undefined) {
+            gameData = [];
+
+            for (r = 0; r < ROWS; r++) {
+                gameData[r] = [];
+                for (c = 0; c < COLS; c++) {
+                    gameData[r].push(0);
+                }
+            }
+        } else {
+            for (r = 0; r < ROWS; r++) {
+                for (c = 0; c < COLS; c++) {
+                    gameData[r][c] = 0;
+                }
+            }
+        }
+
+        if (nextPieceData == undefined) {
+            nextPieceData = [];
+
+            for (r = 0; r < NEXT_ROWS; r++) {
+                nextPieceData[r] = [];
+                for (c = 0; c < COLS; c++) {
+                    nextPieceData[r][c] = 0;
+                }
+            }
+        }
+
+        GUI();
+
+        curPiece = getRandomPiece();
+        nextPiece = getRandomPiece();
+
+//        lineSpan.innerHTML = curLines.toString();
+
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+        requestAnimationFrame(update);
+    }
+
+    function GUI() {
+        ctx.fillStyle = "white";
+        ctx.font = "23px Garamond";
+        ctx.fillText('Next piece', 340, 35);
+
+        ctx.fillText('Score:', 340, 215);
+    }
+
+    var first = true;
+    var nextPiece;
+
+    var DELAY = 400;
+
+    function update() {
+        curTime = new Date().getTime();
+
+        if (curTime - prevTime > DELAY) {
+            //update game piece
+            if (checkMove(curPiece.gridx, curPiece.gridy + 1, curPiece.curState)) {
+                curPiece.gridy += 1;
+            } else {
+                copyData(curPiece);
+                curPiece = nextPiece;
+                nextPiece = getRandomPiece();
+            }
+
+            prevTime = curTime;
+        }
+
+        ctx.clearRect(0, 0, 320, 640);
+        drawBoard();
+        drawPiece(curPiece);
+        drawNextPiece(nextPiece);
+        drawScore();
+
+        if (isGameOver == false) {
+            requestAnimationFrame(update);
+        } else {
+            ctx.drawImage(gameOverImg, 0, 0, 320, 640, 0, 0, 320, 640);
+        }
+    }
+
+    function drawNextPiece(p) {
+        ctx.drawImage(bgImg, 0, 0, 130, 130, NEXT_PIECE_X, NEXT_PIECE_Y, 130, 130);
+
+        for (var r = 0; r < NEXT_ROWS; r++) {
+            for (var c = 0; c < NEXT_COLS; c++) {
+                nextPieceData[r][c] = 0;
+            }
+        }
+
+        for (r = 0; r < p.states[0].length; r++) {
+            for (c = 0; c < p.states[0][r].length; c++) {
+                if (p.states[0][r][c] == 1) {
+                    nextPieceData[r][c] = 1;
+                }
+            }
+        }
+
+        for (r = 0; r < NEXT_ROWS; r++) {
+            for (c = 0; c < NEXT_COLS; c++) {
+                if (nextPieceData[r][c] != 0) {
+                    ctx.drawImage(blockImg, p.color * SIZE, 0, SIZE, SIZE,
+                            (c * SIZE) + NEXT_PIECE_X, (r * SIZE) + NEXT_PIECE_Y, SIZE, SIZE);
+                }
+            }
+        }
+    }
+
+    function drawScore() {
+        ctx.clearRect(320, 220, 100, 50);
+        ctx.font = "40px Garamond";
+        ctx.fillText(curLines.toString(), 340, 255);
+    }
+
+    function copyData(p) {
+        var xpos = p.gridx;
+        var ypos = p.gridy;
+        var state = p.curState;
+
+        for (var r = 0, len = p.states[state].length; r < len; r++) {
+            for (var c = 0, len2 = p.states[state][r].length; c < len2; c++) {
+                if (p.states[state][r][c] == 1 && ypos >= 0) {
+                    gameData[ypos][xpos] = (p.color + 1);
+                }
+
+                xpos += 1;
+            }
+
+            xpos = p.gridx;
+            ypos += 1;
+        }
+
+        checkLines();
+
+        if (p.gridy < 0) {
+            isGameOver = true;
+        }
+    }
+
+    function checkLines() {
+        var lineFound = false;
+        var fullRow = true;
+        var r = ROWS - 1;
+        var c = COLS - 1;
+
+        while (r >= 0) {
+            while (c >= 0) {
+                if (gameData[r][c] == 0) {
+                    fullRow = false;
+                    c = -1;
+                }
+                c--;
+            }
+            if (fullRow == true) {
+                zeroRow(r);
+                r++;
+                lineFound = true;
+                curLines++;
+            }
+
+            fullRow = true;
+            c = COLS - 1;
+            r--;
+        }
+
+        if (lineFound) {
+//            lineSpan.innerHTML = curLines.toString();
+        }
+    }
+
+    function zeroRow(row) {
+        var r = row;
+        var c = 0;
+
+        while (r >= 0) {
+            while (c < COLS) {
+                if (r > 0) {
+                    gameData[r][c] = gameData[r - 1][c];
+                } else {
+                    gameData[r][c] = 0;
+                }
+                c++;
+            }
+
+            c = 0;
+            r--;
+        }
+    }
+
+    function drawBoard() {
+        ctx.drawImage(bgImg, 0, 0, 320, 640, 0, 0, 320, 640);
+
+        for (var r = 0; r < ROWS; r++) {
+            for (var c = 0; c < COLS; c++) {
+                if (gameData[r][c] != 0) {
+                    ctx.drawImage(blockImg, (gameData[r][c] - 1) * SIZE, 0, SIZE, SIZE, c * SIZE, r * SIZE, SIZE, SIZE);
+                }
+            }
+        }
+    }
+
+    function drawPiece(p) {
+        var drawX = p.gridx;
+        var drawY = p.gridy;
+        var state = p.curState;
+
+        for (var r = 0; r < p.states[state].length; r++) {
+            for (var c = 0; c < p.states[state][r].length; c++) {
+                if (p.states[state][r][c] == 1 && drawY >= 0) {
+                    ctx.drawImage(blockImg, p.color * SIZE, 0, SIZE, SIZE, drawX * SIZE, drawY * SIZE, SIZE, SIZE);
+                }
+
+                drawX += 1;
+            }
+
+            drawX = p.gridx;
+            drawY += 1;
+        }
+    }
+
+    function checkMove(xpos, ypos, newState) {
+        var result = true;
+        var newx = xpos;
+        var newy = ypos;
+
+        for (var r = 0, len = curPiece.states[newState].length; r < len; r++) {
+            for (var c = 0, len2 = curPiece.states[newState][r].length; c < len2; c++) {
+                if (newx < 0 || newx >= COLS) {
+                    result = false;
+                    c = len2;
+                    r = len;
+                }
+
+                if (gameData[newy] != undefined && gameData[newy][newx] != 0
+                        && curPiece.states[newState][r] != undefined && curPiece.states[newState][r][c] != 0) {
+                    result = false;
+                    c = len2;
+                    r = len;
+                }
+
+                newx += 1;
+            }
+
+            newx = xpos;
+            newy += 1;
+
+            if (newy > ROWS) {
+                r = len;
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

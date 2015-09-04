@@ -243,6 +243,19 @@ body {
     margin: 20px auto;
 }
 
+.app5 {
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    background-image: url("images/tetris.png");
+    border-radius: 50%;
+    line-height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin: 20px auto;
+}
+
 button {
     display: block;
     margin: 20px auto;
