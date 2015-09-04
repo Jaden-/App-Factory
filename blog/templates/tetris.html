@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<body class="tetris_body">
-<div id="gameboard">
-    <canvas id="gameCanvas" width="480" height="640"></canvas>
+<div class="parent">
+    <div id="gameboard">
+        <canvas id="gameCanvas" width="900" height="640"></canvas>
+    </div>
+    <div id="controls"></div>
 </div>
 <audio controls autoplay loop>
-    <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
+<source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
 </audio>
 <div id="score">
     <!--<p>Lines: <span id="lines"></span></p>-->
@@ -23,16 +25,21 @@
     const NEXT_ROWS = 4;
     const NEXT_COLS = 4;
 
-    const NEXT_PIECE_X = 335;
+    const NEXT_PIECE_X = 380;
     const NEXT_PIECE_Y = 50;
 
+    const TEXT_RIGHT_X = 620;
+    const TEXT_LEFT_X = 30;
+
     var SIZE = 32;
+    const BOARD_OFFSET = 225;
 
     var canvas;
     var ctx;
     var blockImg;
     var bgImg;
     var gameOverImg;
+    var controlsImg;
 
     var curPiece;
     var gameData;
@@ -42,7 +49,9 @@
     var curTime;
     var isGameOver;
     var lineSpan;
-    var curLines = 0;
+    var score = 0;
+    var multiplier = 1;
+    var speed = 1;
 
     // mobile
     var touchX, touchY, touchId;
@@ -115,6 +124,7 @@
         imgLoader.addImage("blog/static/tetris/img/blocks.png", "blocks");
         imgLoader.addImage("blog/static/tetris/img/bg.png", "bg");
         imgLoader.addImage("blog/static/tetris/img/over.png", "gameover");
+        imgLoader.addImage("blog/static/tetris/img/controls.png", "controls");
         imgLoader.onReadyCallback = onImagesLoaded;
         imgLoader.loadImages();
 
@@ -181,12 +191,15 @@
         blockImg = imgLoader.getImageAtIndex(0);
         bgImg = imgLoader.getImageAtIndex(1);
         gameOverImg = imgLoader.getImageAtIndex(2);
+        controlsImg = imgLoader.getImageByName('controls')
         initGame();
     }
 
     function initGame() {
         var r, c;
-        curLines = 0;
+        score = 0;
+        multiplier = 1;
+        speed = 1;
         isGameOver = false;
 
         if (gameData == undefined) {
@@ -222,7 +235,7 @@
         curPiece = getRandomPiece();
         nextPiece = getRandomPiece();
 
-//        lineSpan.innerHTML = curLines.toString();
+//        lineSpan.innerHTML = score.toString();
 
         window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                 window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -230,12 +243,19 @@
         requestAnimationFrame(update);
     }
 
+    var TEXT_Y_PADDING = 80;
+
     function GUI() {
         ctx.fillStyle = "white";
         ctx.font = "23px Garamond";
-        ctx.fillText('Next piece', 340, 35);
-
-        ctx.fillText('Score:', 340, 215);
+        //RIGHT
+        ctx.fillText('Next piece', TEXT_RIGHT_X, 35);
+        ctx.fillText('Score', TEXT_RIGHT_X, 215);
+        ctx.fillText('Multiplier', TEXT_RIGHT_X, 215 + TEXT_Y_PADDING);
+        ctx.fillText('Speed', TEXT_RIGHT_X, 215 + TEXT_Y_PADDING * 2);
+        //LEFT
+        ctx.fillText('Controls:', TEXT_LEFT_X, 35);
+        ctx.drawImage(controlsImg, TEXT_LEFT_X, 60)
     }
 
     var first = true;
@@ -259,21 +279,21 @@
             prevTime = curTime;
         }
 
-        ctx.clearRect(0, 0, 320, 640);
+        ctx.clearRect(200, 0, 320, 640);
         drawBoard();
         drawPiece(curPiece);
         drawNextPiece(nextPiece);
-        drawScore();
+        drawStats();
 
         if (isGameOver == false) {
             requestAnimationFrame(update);
         } else {
-            ctx.drawImage(gameOverImg, 0, 0, 320, 640, 0, 0, 320, 640);
+            ctx.drawImage(gameOverImg, 0, 0, 320, 640, BOARD_OFFSET, 0, 320, 640);
         }
     }
 
     function drawNextPiece(p) {
-        ctx.drawImage(bgImg, 0, 0, 130, 130, NEXT_PIECE_X, NEXT_PIECE_Y, 130, 130);
+        ctx.drawImage(bgImg, 0, 0, 130, 130, BOARD_OFFSET + NEXT_PIECE_X, NEXT_PIECE_Y, 130, 130);
 
         for (var r = 0; r < NEXT_ROWS; r++) {
             for (var c = 0; c < NEXT_COLS; c++) {
@@ -293,16 +313,31 @@
             for (c = 0; c < NEXT_COLS; c++) {
                 if (nextPieceData[r][c] != 0) {
                     ctx.drawImage(blockImg, p.color * SIZE, 0, SIZE, SIZE,
-                            (c * SIZE) + NEXT_PIECE_X, (r * SIZE) + NEXT_PIECE_Y, SIZE, SIZE);
+                            BOARD_OFFSET + (c * SIZE) + NEXT_PIECE_X, (r * SIZE) + NEXT_PIECE_Y, SIZE, SIZE);
                 }
             }
         }
     }
 
-    function drawScore() {
-        ctx.clearRect(320, 220, 100, 50);
+    function drawStats() {
         ctx.font = "40px Garamond";
-        ctx.fillText(curLines.toString(), 340, 255);
+
+        //Score
+        ctx.clearRect(TEXT_RIGHT_X, 220, 150, 50);
+        ctx.fillText(score.toFixed(2), TEXT_RIGHT_X, 255);
+
+        //Multiplier
+        ctx.fillStyle = "white";
+        ctx.clearRect(TEXT_RIGHT_X, 220 + 80, 150, 50);
+        ctx.fillText(multiplier.toFixed(2), TEXT_RIGHT_X, 225 + 110);
+
+        //Speed
+        ctx.clearRect(TEXT_RIGHT_X, 220 + 160, 150, 50);
+        ctx.fillText(speed, TEXT_RIGHT_X, 225 + 195);
+    }
+
+    function drawSpeed() {
+
     }
 
     function copyData(p) {
@@ -348,7 +383,10 @@
                 zeroRow(r);
                 r++;
                 lineFound = true;
-                curLines++;
+                score += multiplier * 10;
+                speed += 1;
+                multiplier += (speed / 100);
+                DELAY -= speed;
             }
 
             fullRow = true;
@@ -357,7 +395,7 @@
         }
 
         if (lineFound) {
-//            lineSpan.innerHTML = curLines.toString();
+//            lineSpan.innerHTML = score.toString();
         }
     }
 
@@ -381,12 +419,12 @@
     }
 
     function drawBoard() {
-        ctx.drawImage(bgImg, 0, 0, 320, 640, 0, 0, 320, 640);
+        ctx.drawImage(bgImg, 0, 0, 320, 640, BOARD_OFFSET, 0, 320, 640);
 
         for (var r = 0; r < ROWS; r++) {
             for (var c = 0; c < COLS; c++) {
                 if (gameData[r][c] != 0) {
-                    ctx.drawImage(blockImg, (gameData[r][c] - 1) * SIZE, 0, SIZE, SIZE, c * SIZE, r * SIZE, SIZE, SIZE);
+                    ctx.drawImage(blockImg, (gameData[r][c] - 1) * SIZE, 0, SIZE, SIZE, BOARD_OFFSET + (c * SIZE), r * SIZE, SIZE, SIZE);
                 }
             }
         }
@@ -400,7 +438,7 @@
         for (var r = 0; r < p.states[state].length; r++) {
             for (var c = 0; c < p.states[state][r].length; c++) {
                 if (p.states[state][r][c] == 1 && drawY >= 0) {
-                    ctx.drawImage(blockImg, p.color * SIZE, 0, SIZE, SIZE, drawX * SIZE, drawY * SIZE, SIZE, SIZE);
+                    ctx.drawImage(blockImg, p.color * SIZE, 0, SIZE, SIZE, BOARD_OFFSET + drawX * SIZE, drawY * SIZE, SIZE, SIZE);
                 }
 
                 drawX += 1;
