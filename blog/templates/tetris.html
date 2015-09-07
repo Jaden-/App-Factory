@@ -11,9 +11,12 @@
 <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
 </audio>
 <div id="score">
-    <!--<p>Lines: <span id="lines"></span></p>-->
+    <p>Submit highscore:</p>
+    <!--<span id="highscore"></span></p>-->
+    <form>
+        <input type=text id="highscore" value="">
+    </form>
 </div>
-</body>
 
 <script type="text/javascript" src="blog/static/tetris/js/pieces.js"></script>
 <script type="text/javascript" src="blog/static/tetris/js/BulkImageLoader.js"></script>
@@ -48,7 +51,7 @@
     var prevTime;
     var curTime;
     var isGameOver;
-    var lineSpan;
+    var highscore;
     var score = 0;
     var multiplier = 1;
     var speed = 1;
@@ -130,7 +133,7 @@
 
         canvas = document.getElementById('gameCanvas');
         ctx = canvas.getContext('2d');
-//        lineSpan = document.getElementById('lines');
+        highscore = document.getElementById('highscore');
 
         prevTime = curTime = 0;
 
@@ -200,6 +203,7 @@
         score = 0;
         multiplier = 1;
         speed = 1;
+        DELAY = 400;
         isGameOver = false;
 
         if (gameData == undefined) {
@@ -235,7 +239,7 @@
         curPiece = getRandomPiece();
         nextPiece = getRandomPiece();
 
-//        lineSpan.innerHTML = score.toString();
+//        highscore.innerHTML = score.toString();
 
         window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                 window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -336,10 +340,6 @@
         ctx.fillText(speed, TEXT_RIGHT_X, 225 + 195);
     }
 
-    function drawSpeed() {
-
-    }
-
     function copyData(p) {
         var xpos = p.gridx;
         var ypos = p.gridy;
@@ -384,9 +384,12 @@
                 r++;
                 lineFound = true;
                 score += multiplier * 10;
-                speed += 1;
                 multiplier += (speed / 100);
-                DELAY -= speed;
+                if (DELAY > 100) {
+                    speed += 1;
+                    DELAY -= speed;
+                }
+                console.log('Speed: ' + DELAY);
             }
 
             fullRow = true;
@@ -395,7 +398,7 @@
         }
 
         if (lineFound) {
-//            lineSpan.innerHTML = score.toString();
+            highscore.innerHTML = score.toFixed(2);
         }
     }
 
@@ -487,14 +490,3 @@
 </script>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
