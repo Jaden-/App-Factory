@@ -7,15 +7,38 @@
     </div>
     <div id="controls"></div>
 </div>
-<audio controls autoplay loop>
-    <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
-</audio>
+<!--<audio controls autoplay loop>-->
+    <!--<source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">-->
+<!--</audio>-->
 <div id="score">
-    <p>Submit highscore:</p>
+    <p>Submit highscore (You need to be logged in):</p>
     <!--<span id="highscore"></span></p>-->
-    <form>
-        <input type=text id="highscore" value="">
+    <form method="post">
+        <input type="number" style="width: 50%" id="highscore" name="highscore_get">
+        <input type="submit">
     </form>
+</div>
+<div id="highscore-table">
+    <table class="about-table">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Score
+            </th>
+        </tr>
+        {% for highscore in highscores %}
+        <tr>
+            <td>
+                {{highscore.name}}
+            </td>
+            <td>
+                {{highscore.highscore}}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 <script type="text/javascript" src="blog/static/tetris/js/pieces.js"></script>
@@ -31,7 +54,7 @@
     const NEXT_PIECE_X = 380;
     const NEXT_PIECE_Y = 50;
 
-    const TEXT_RIGHT_X = 620;
+    const TEXT_RIGHT_X = 605;
     const TEXT_LEFT_X = 30;
 
     var SIZE = 32;
@@ -54,9 +77,12 @@
     var curTime;
     var isGameOver;
     var highscore;
+    var previousScore = -1;
     var score = 0;
     var multiplier = 1;
     var speed = 1;
+    var message = "";
+    var messageDetails = "";
 
     // mobile
     var touchX, touchY, touchId;
@@ -188,6 +214,7 @@
                     break;
             }
         } else {
+            previousScore = score;
             initGame();
         }
     }
@@ -207,6 +234,8 @@
         speed = 1;
         DELAY = 400;
         isGameOver = false;
+        message = "Rows / Tetris";
+        messageDetails = "Bonus multiplier";
 
         if (gameData == undefined) {
             gameData = [];
@@ -241,8 +270,6 @@
         curPiece = getRandomPiece();
         nextPiece = getRandomPiece();
 
-//        highscore.innerHTML = score.toString();
-
         window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                 window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
@@ -259,6 +286,10 @@
         ctx.fillText('Score', TEXT_RIGHT_X, 215);
         ctx.fillText('Multiplier', TEXT_RIGHT_X, 215 + TEXT_Y_PADDING);
         ctx.fillText('Speed', TEXT_RIGHT_X, 215 + TEXT_Y_PADDING * 2);
+        ctx.fillText('Bonus', TEXT_RIGHT_X, 215 + TEXT_Y_PADDING * 3);
+        ctx.strokeStyle = "white";
+        ctx.rect(TEXT_RIGHT_X - 10, 235 + TEXT_Y_PADDING * 3, 170, 80);
+        ctx.stroke();
         //LEFT
         ctx.drawImage(controlsImg, TEXT_LEFT_X - 30, 15);
     }
@@ -292,6 +323,11 @@
             requestAnimationFrame(update);
         } else {
             ctx.drawImage(gameOverImg, 0, 0, 320, 640, BOARD_OFFSET, 0, 320, 640);
+        }
+
+        //update highscore
+        if (score > previousScore) {
+            highscore.value = score.toFixed(2);
         }
     }
 
@@ -337,6 +373,12 @@
         //Speed
         ctx.clearRect(TEXT_RIGHT_X, 220 + 160, 150, 50);
         ctx.fillText(speed.toFixed(1), TEXT_RIGHT_X, 225 + 195);
+
+        //Messages
+        ctx.font = "23px Garamond";
+        ctx.clearRect(TEXT_RIGHT_X - 5, 220 + 265, 155, 60);
+        ctx.fillText(message, TEXT_RIGHT_X, 225 + 280);
+        ctx.fillText(messageDetails, TEXT_RIGHT_X, 225 + 315);
     }
 
     function copyData(p) {
@@ -369,6 +411,7 @@
         var fullRow = true;
         var r = ROWS - 1;
         var c = COLS - 1;
+        var numLines = 0;
 
         while (r >= 0) {
             while (c >= 0) {
@@ -391,6 +434,7 @@
                     DELAY -= 1;
                     speed += 0.1;
                 }
+                numLines++;
                 console.log('Speed: ' + DELAY);
             }
 
@@ -399,8 +443,31 @@
             r--;
         }
 
+        var multiplier_increase = 0;
+
+        switch (numLines) {
+            case 2:
+                message = "Two rows!";
+                multiplier_increase = (speed / 100) * 1.2;
+                messageDetails = "+ " + multiplier_increase.toFixed(2) + " multiplier";
+                multiplier += multiplier_increase;
+                break;
+            case 3:
+                message = "Three rows!";
+                multiplier_increase = (speed / 100) * 1.5;
+                messageDetails = "+ " + multiplier_increase.toFixed(2) + " multiplier";
+                multiplier += multiplier_increase;
+                break;
+            case 4:
+                message = "Tetris";
+                multiplier_increase = (speed / 100) * 2;
+                messageDetails = "+ " + multiplier_increase.toFixed(2) + " multiplier";
+                multiplier += multiplier_increase;
+                break;
+        }
+
         if (lineFound) {
-            highscore.innerHTML = score.toFixed(2);
+//            highscore.innerHTML = score.toFixed(2);
         }
     }
 

@@ -60,12 +60,12 @@ IP_URL = "http://api.hostip.info/?ip="
 def get_coords(ip):
     url = IP_URL + ip
     content = None
-    try:
-        logging.log(40, "Reading URL")
-        content = urllib2.urlopen(url).read()
-    except urllib2.URLError:
-        logging.log(40, "ERROR URLIB2")
-        return
+    # try:
+    #     logging.log(40, "Reading URL")
+    #     content = urllib2.urlopen(url).read()
+    # except urllib2.URLError:
+    #     logging.log(40, "ERROR URLIB2")
+    #     return
 
     if content:
         #Parse xml and find the coordinates
