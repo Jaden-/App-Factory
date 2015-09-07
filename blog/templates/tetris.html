@@ -8,7 +8,7 @@
     <div id="controls"></div>
 </div>
 <audio controls autoplay loop>
-<source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
+    <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
 </audio>
 <div id="score">
     <p>Submit highscore:</p>
@@ -36,6 +36,8 @@
 
     var SIZE = 32;
     const BOARD_OFFSET = 225;
+
+    var DELAY = 400;
 
     var canvas;
     var ctx;
@@ -203,7 +205,7 @@
         score = 0;
         multiplier = 1;
         speed = 1;
-        DELAY = 400;
+        DELAY = 100;
         isGameOver = false;
 
         if (gameData == undefined) {
@@ -263,8 +265,6 @@
 
     var first = true;
     var nextPiece;
-
-    var DELAY = 400;
 
     function update() {
         curTime = new Date().getTime();
@@ -336,7 +336,7 @@
 
         //Speed
         ctx.clearRect(TEXT_RIGHT_X, 220 + 160, 150, 50);
-        ctx.fillText(speed, TEXT_RIGHT_X, 225 + 195);
+        ctx.fillText(speed.toFixed(1), TEXT_RIGHT_X, 225 + 195);
     }
 
     function copyData(p) {
@@ -386,7 +386,10 @@
                 multiplier += (speed / 100);
                 if (DELAY > 100) {
                     speed += 1;
-                    DELAY -= speed;
+                    DELAY -= 15;
+                } else {
+                    DELAY -= 1;
+                    speed += 0.1;
                 }
                 console.log('Speed: ' + DELAY);
             }
