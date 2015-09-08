@@ -3,7 +3,7 @@ function Map(gameData) {
     var rows = gameData.length;
     var cons = gameData[0].length;
     var count = 0;
-    var REMOVE_ON = 25;
+    var REMOVE_ON = 22;
     var NUM_COLORS = 8;
     var DEBUG_MODE = false;
 

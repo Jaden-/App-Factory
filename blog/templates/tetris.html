@@ -7,9 +7,9 @@
     </div>
     <div id="controls"></div>
 </div>
-<!--<audio controls autoplay loop>-->
-    <!--<source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">-->
-<!--</audio>-->
+<audio controls autoplay loop>
+    <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
+</audio>
 <div id="score">
     <p>Submit highscore (You need to be logged in)
         <a class="login-link" href="/login">login</a>
@@ -73,6 +73,7 @@
     var bgImg;
     var gameOverImg;
     var controlsImg;
+    var boardclear;
 
     var curPiece;
     var gameData;
@@ -161,6 +162,7 @@
         imgLoader.addImage("blog/static/tetris/img/bg.png", "bg");
         imgLoader.addImage("blog/static/tetris/img/over.png", "gameover");
         imgLoader.addImage("blog/static/tetris/img/controls.png", "controls");
+        imgLoader.addImage("blog/static/tetris/img/boardclear.png", "boardclear");
         imgLoader.onReadyCallback = onImagesLoaded;
         imgLoader.loadImages();
 
@@ -229,6 +231,7 @@
         bgImg = imgLoader.getImageAtIndex(1);
         gameOverImg = imgLoader.getImageAtIndex(2);
         controlsImg = imgLoader.getImageByName('controls')
+        boardclear = imgLoader.getImageByName('boardclear')
         initGame();
     }
 
@@ -297,6 +300,9 @@
         ctx.stroke();
         //LEFT
         ctx.drawImage(controlsImg, TEXT_LEFT_X - 30, 15);
+        ctx.fillText('22 adjacent colors', TEXT_LEFT_X, 270);
+        ctx.drawImage(boardclear, TEXT_LEFT_X, 280);
+        ctx.fillText('= Board clear', TEXT_LEFT_X, 340);
     }
 
     var first = true;
