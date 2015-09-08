@@ -1,8 +1,8 @@
 import logging
 
 from google.appengine.ext import db
-from blog.general_handler import GeneralHandler
 
+from blog.general_handler import GeneralHandler
 from db.Post import Post
 
 def blog_key(name = 'default'):

@@ -11,10 +11,14 @@
     <!--<source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">-->
 <!--</audio>-->
 <div id="score">
-    <p>Submit highscore (You need to be logged in):</p>
-    <!--<span id="highscore"></span></p>-->
+    <p>Submit highscore (You need to be logged in)
+        <a class="login-link" href="/login">login</a>
+        |
+        <a class="login-link" href="/signup">signup </a>
+        <div class="error">{{error}}</div>
+    </p>
     <form method="post">
-        <input type="number" style="width: 50%" id="highscore" name="highscore_get">
+        <input type="text" style="width: 50%" id="highscore" name="highscore_get">
         <input type="submit">
     </form>
 </div>
