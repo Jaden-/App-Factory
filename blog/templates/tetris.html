@@ -20,6 +20,7 @@
 
 <script type="text/javascript" src="blog/static/tetris/js/pieces.js"></script>
 <script type="text/javascript" src="blog/static/tetris/js/BulkImageLoader.js"></script>
+<script type="text/javascript" src="blog/static/tetris/js/js.js"></script>
 
 <script type="text/javascript">
     var ROWS = 20;
@@ -293,6 +294,9 @@
         } else {
             ctx.drawImage(gameOverImg, 0, 0, 320, 640, BOARD_OFFSET, 0, 320, 640);
         }
+        var map = new Map(gameData);
+        map.checkAndRemovePeices();
+
     }
 
     function drawNextPiece(p) {
