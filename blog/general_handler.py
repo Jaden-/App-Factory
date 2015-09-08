@@ -4,6 +4,7 @@ import os
 
 import jinja2
 import webapp2
+
 from db.Count import Count
 from db.User import User
 
@@ -40,7 +41,10 @@ class GeneralHandler(webapp2.RequestHandler):
         return t.render(kw)
 
     def get_user(self):
-        return self.user.name
+        try:
+            return self.user.name
+        except:
+            return ''
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))

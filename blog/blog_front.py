@@ -1,5 +1,3 @@
-import logging
-
 from google.appengine.ext.db import GqlQuery
 
 from blog.general_handler import GeneralHandler

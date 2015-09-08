@@ -2,7 +2,7 @@ import webapp2
 
 from blog.google_maps import GoogleMapsHandler
 from blog.live_chat import LiveChatHandler
-from blog.snake import SnakeHandler
+from blog.Snake import SnakeHandler
 from blog.about import AboutHandler
 from blog.blog_front import BlogFront
 from blog.bubbleshooter import BubbleHandler

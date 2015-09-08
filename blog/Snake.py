@@ -1,4 +1,5 @@
 from google.appengine.ext.db import GqlQuery
+
 from blog.general_handler import GeneralHandler
 from db.SnakeComment import SnakeComment
 
@@ -12,7 +13,7 @@ class SnakeHandler(GeneralHandler):
         else:
             comments = GqlQuery("SELECT * FROM SnakeComment ORDER BY created DESC LIMIT 4")
 
-        self.render('snake.html', snakeComments=comments);
+        self.render('snake.html', snakeComments=comments)
 
     def post(self):
         author = self.get_user()
