@@ -1,10 +1,9 @@
-import logging
 import re
-import urllib2
 from xml.dom import minidom
-from google.appengine.api.datastore_types import GeoPt
-from blog.general_handler import GeneralHandler
 
+from google.appengine.api.datastore_types import GeoPt
+
+from blog.general_handler import GeneralHandler
 from db import User
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")

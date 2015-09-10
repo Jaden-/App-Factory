@@ -11,16 +11,34 @@
     <source src="blog/static/tetris/sound/tetris.mp3" type="audio/mpeg">
 </audio>
 <div id="score">
-    <p>Submit highscore (You need to be logged in)
-        <a class="login-link" href="/login">login</a>
-        |
-        <a class="login-link" href="/signup">signup </a>
-        <div class="error">{{error}}</div>
-    </p>
+    {% if not user %}
+    <div class="error">
+        <p>You need to be logged in to submit a highscore (
+            <a class="login-link" href="/login">login</a>
+            |
+            <a class="login-link" href="/signup">signup </a>
+            )
+        </p>
+    </div>
+    {% else %}
+    <br>
+    {% endif %}
+    <div class="error">{{error}}</div>
     <form method="post">
-        <input type="text" style="width: 50%" id="highscore" name="highscore_get">
+        <fieldset>
+        <legend>Submit highscore</legend>
+        Score:
+        <input type="text" style="width: 10%" id="highscore" name="highscore_get" readonly>
+        Speed:
+        <input type="text" style="width: ;idth: 7%" id="speed" name="speed_get" readonly>
+        Multiplier:
+        <input type="text" style="width: 7%" id="multiplier" name="multiplier_get" readonly>
+        Hash:
+        <input type="text" style="width: 30%" id="hash" name="hash_get" readonly>
         <input type="submit">
+        </fieldset>
     </form>
+    <br>
 </div>
 <div id="highscore-table">
     <table class="about-table">
@@ -31,6 +49,12 @@
             <th>
                 Score
             </th>
+            <th>
+                Speed
+            </th>
+            <th>
+                Multiplier
+            </th>
         </tr>
         {% for highscore in highscores %}
         <tr>
@@ -40,6 +64,12 @@
             <td>
                 {{highscore.highscore}}
             </td>
+            <td>
+                {{highscore.speed}}
+            </td>
+            <td>
+                {{highscore.multiplier}}
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -48,6 +78,7 @@
 <script type="text/javascript" src="blog/static/tetris/js/pieces.js"></script>
 <script type="text/javascript" src="blog/static/tetris/js/BulkImageLoader.js"></script>
 <script type="text/javascript" src="blog/static/tetris/js/js.js"></script>
+<script type="text/javascript" src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js"></script>
 
 <script type="text/javascript">
     var ROWS = 20;
@@ -83,10 +114,13 @@
     var curTime;
     var isGameOver;
     var highscore;
+    var top_speed = 0;
+    var top_multiplier = 0;
     var previousScore = -1;
     var score = 0;
     var multiplier = 1;
     var speed = 1;
+    const a = 'jdks'
     var message = "";
     var messageDetails = "";
 
@@ -163,12 +197,16 @@
         imgLoader.addImage("blog/static/tetris/img/over.png", "gameover");
         imgLoader.addImage("blog/static/tetris/img/controls.png", "controls");
         imgLoader.addImage("blog/static/tetris/img/boardclear.png", "boardclear");
-        imgLoader.onReadyCallback = onImagesLoaded;
-        imgLoader.loadImages();
+        ader.onReadyCallback = onImagesLoaded;
+
 
         canvas = document.getElementById('gameCanvas');
-        ctx = canvas.getContext('2d');
+
         highscore = document.getElementById('highscore');
+        top_speed = document.getElementById('speed');
+        top_multiplier = document.getElementById('multiplier');
+        hash = document.getElementById('hash');
+
 
         prevTime = curTime = 0;
 
@@ -262,7 +300,7 @@
             }
         }
 
-        if (nextPieceData == undefined) {
+        ieceData == undefined) {
             nextPieceData = [];
 
             for (r = 0; r < NEXT_ROWS; r++) {
@@ -301,8 +339,8 @@
         //LEFT
         ctx.drawImage(controlsImg, TEXT_LEFT_X - 30, 15);
         ctx.fillText('22 adjacent colors', TEXT_LEFT_X, 270);
-        ctx.drawImage(boardclear, TEXT_LEFT_X, 280);
-        ctx.fillText('= Board clear', TEXT_LEFT_X, 340);
+        ctx.drawImage(boardclear, TEXT_LEFT_X + 40, 280);
+        ctx.fillText('= Board clear', TEXT_LEFT_X, 400);
     }
 
     var first = true;
@@ -338,10 +376,13 @@
         var map = new Map(gameData);
         map.checkAndRemovePeices();
 
-
         //update highscore
         if (score > previousScore) {
             highscore.value = score.toFixed(2);
+            top_speed.value = speed.toFixed(1);
+            top_multiplier.value = multiplier.toFixed(2);
+            hash.value = CryptoJS.SHA256(score.toFixed(2).toString() + speed.toFixed(1).toString()
+                    + multiplier.toFixed(2).toString() + a);
         }
     }
 
@@ -480,9 +521,6 @@
                 break;
         }
 
-        if (lineFound) {
-//            highscore.innerHTML = score.toFixed(2);
-        }
     }
 
     function zeroRow(row) {

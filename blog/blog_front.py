@@ -40,5 +40,4 @@ class BlogFront(GeneralHandler):
             c.put()
             self.redirect('/')
         else:
-            error = "Please submit some content!"
-            self.render("front.html", content=content, error=error)
+            self.render("front.html", content=content, error="Please submit some content!")
